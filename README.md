@@ -31,7 +31,7 @@ Install python package apex for distributed training
 ```
 git clone https://github.com/NVIDIA/apex
 cd apex
-pip install -v --disable-pip-version-check --no-cache-dir ./
+pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 ```
 
 ## Supported model weights
@@ -48,10 +48,29 @@ Move the downloaded weights to weights/
 
 ## Preparation of dataset - Cityscapes
 
-Please download the dataset from the officit site - [Download](https://www.cityscapes-dataset.com/)
+Please download the dataset from the official site. 
+
+This dataset requires you to download the source data manually:
+You have to download files from - [Download](https://www.cityscapes-dataset.com/) (This dataset requires registration). The config file is written for leftImg8bit_sequence_trainvaltest.zip and the fine annotations files from gtFine_trainvaltest.zip. To use other datasets, you require additional configa, which are not included.
+
+Aternatively, For downloading using command line, as shared by [cemsaz](https://github.com/cemsaz/city-scapes-script), 
+
+Use below cmd by specifying your username and password,
 
 ```
-data_path = './data/leftImg8bit_sequence_trainvaltest_2K/'
+wget --keep-session-cookies --save-cookies=cookies.txt --post-data 'username=myusername&password=mypassword&submit=Login' https://www.cityscapes-dataset.com/login/
+```
+
+and provide the packageID of the required zip file. 
+
+```
+wget --load-cookies cookies.txt --content-disposition https://www.cityscapes-dataset.com/file-handling/?packageID=1
+```
+
+Hint : You can get the package id from the download link of the file you need to download. In our case, for leftImg8bit_sequence_trainvaltest.zip and gtFine_trainvaltest.zip, it is packageID=14 & 1. 
+
+```
+data_path = './data/cityscapes'
 ```
 
 Modify the data_path in config/cityscapes.py
@@ -60,7 +79,7 @@ Modify the data_path in config/cityscapes.py
 
 ```
 CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --master_port 1111 \ 
---nproc_per_node 2 python main.py --segnet <segnet_name> --dataset <dataset_name> \
+--nproc_per_node 2 main.py --segnet <segnet_name> --dataset <dataset_name> \
 --optical-flow-network <of_name> --checkname <SAVE_DIR>
 ```
 

@@ -163,7 +163,7 @@ class Trainer(object):
 
         if args.dataset.find("cityscapes") >= 0:
             self.dataset_config = cityscapes_config()
-        elif args.dataset_name == "camvid":
+        elif args.dataset == "camvid":
             self.dataset_config = camvid_config()
         else:
             raise NotImplementedError("Trainer dataset %s is not registered into the system" % args.dataset)
@@ -173,7 +173,8 @@ class Trainer(object):
         self.num_classes = self.dataset_config.num_classes
         self.swnet_weight_path = self.dataset_config.swnet_weight_path
         self.bsnet_weight_path = self.dataset_config.bsnet_weight_path
-        self.resume_path = self.dataset_config.resume_path
+        self.swnet_resume_path = self.dataset_config.swnet_resume_path
+        self.bisenet_resume_path = self.dataset_config.bisenet_resume_path
         self.optical_flow_network_path = self.dataset_config.optical_flow_network_path
         self.data_path = self.dataset_config.data_path
 
